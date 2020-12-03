@@ -135,6 +135,8 @@ function score() {
 
 
 
+
+
 function removeFatalPoint() {
 	fatalPoint++;
 	arrayFatalPoint.push(fatalPoint);
