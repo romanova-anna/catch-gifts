@@ -115,7 +115,7 @@ function bombСontact() {
 			gamer.classList.add("getbomb");
 			setTimeout(function(){
 				gamer.classList.remove('getbomb');
-				},5000);
+				},500);
 			clearInterval(bomb.dataset.timer);
 			setTimeout(function() {
 				bomb.remove();
