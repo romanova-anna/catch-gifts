@@ -1,6 +1,7 @@
 "use strict";
 
-// первая страничка, создание input, заголовка, кнопки
+// первая страничка: создание заголовка, input, кнопки, массива с именем, 
+// проверка на имя, подключение body
 	let title = document.createElement('h2');
 		title.className = "title";
 		document.body.appendChild(title);
@@ -16,18 +17,31 @@
 		buttonStart.className = "buttonStart";
 		document.body.appendChild(buttonStart);
 		buttonStart.textContent = "Далее";
-
+	
+	let titleCatch = document.querySelector('.titleCatch');
 		
 	let notesUserName = [];
+	
 		buttonStart.addEventListener('click', (e) => {
-		e.preventDefault();
-		const fullName = entryPoint.value;
-		notesUserName.push(fullName);
-		choicePerson();
-		});	
-	let body = document.querySelector('body');
+			e.preventDefault();
+			const fullName = entryPoint.value;
+			notesUserName.push(fullName);
+			function nameСheck() {
+				if (entryPoint.value == "") {
+					alert("Введите Ваше имя!!!!!!");
+				}
+				else {
+				choicePerson();
+				}
+			}
+			nameСheck();
+			
+			});	
+	
 		
+	let body = document.querySelector('body');
 
+		
 //вторая страничка: выбор персонажа
 function choicePerson() {
 	title.remove();
@@ -54,21 +68,7 @@ function choicePerson() {
 	let choiceText = document.createElement('h2');
 		choiceText.className = "choiceText";
 		document.body.appendChild(choiceText);
-		choiceText.textContent = `Выберите одного из трех персонажей и нажмите на кнопку "Играть!"`;
-		
-
-
-	let cardGamerFirst = document.createElement('button');
-		cardGamerFirst.className = "card";
-		document.body.appendChild(cardGamerFirst);
-
-	let cardGamerSecond = document.createElement('button');
-		cardGamerSecond.className = "cardSecond";
-		document.body.appendChild(cardGamerSecond);
-
-	let cardGamerThird = document.createElement('button');
-		cardGamerThird.className = "cardThird";
-		document.body.appendChild(cardGamerThird);
+		choiceText.textContent = `Правила игры: Поймай подарки за 30 секунд, не потеряв 3 жизни.`;
 	
 	
 	let buttonStartGame = document.createElement('button');
@@ -81,9 +81,6 @@ function choicePerson() {
 		buttonStartGame.addEventListener('click', (e) => {
 			e.preventDefault();
 			buttonStartGame.remove();
-			cardGamerFirst.remove();
-			cardGamerSecond.remove();
-			cardGamerThird.remove();
 			choiceText.remove();
 			welcome.remove();
 			body.classList.add('back3');
@@ -115,6 +112,12 @@ function start() {
 		life.classList.add("doublelife");
 	}
 	addClassLife();
+
+	titleCatch.remove();
+
+	let timerShow = document.createElement('div');
+		timerShow.className = "timer";
+		document.body.appendChild(timerShow);
 	
 	let left = 37,
 		right = 39,
@@ -238,6 +241,22 @@ function start() {
 			}
 	}
 	
+	function timer() {
+        let i = 60 * 0.5,
+        timerId = setInterval(function() {
+            i--;
+            timerShow.innerHTML = Math.floor(i / 60) + '.' + Math.floor(i % 60 / 10) + i % 60 % 10;
+            if (i < 1) {
+			clearInterval(timerId);
+			win();
+		    }
+		}, 1000);
+		
+	}
+	timer();
+
+
+
 	function pickUpGamer() {
 			let ambulance = document.createElement('div');
 			ambulance.className = "ambulance";
@@ -259,10 +278,39 @@ function start() {
 			ambulance.offsetLeft >= gamer.offsetLeft) {
 				gamer.className = " ";
 				gamer.remove();
-				
-				
 			}
 	}
+	function playSoundWinGame() {
+		let winGame = document.querySelector("#wingame");
+		winGame.play();
+	}
+
+	function win() {
+		let gameOverTitle = document.createElement('h2');
+		gameOverTitle.className = "gameOverTitle";
+		document.body.appendChild(gameOverTitle);
+		gameOverTitle.textContent = 'WIN';
+
+		let result = document.createElement('h2');
+		result.className = "result";
+		document.body.appendChild(result);
+		result.textContent = `${notesUserName[0]}, Ваш результат: ${arrayPoint.length}`;
+
+		let buttonRestart = document.createElement('button');
+		buttonRestart.className = "buttonRestart";
+		document.body.appendChild(buttonRestart);
+		buttonRestart.textContent = "Играть еще";
+		playSoundWinGame();
+		let soundFondDelete = document.querySelector("#fond");
+			soundFondDelete.remove();
+		point.remove();
+
+		buttonRestart.addEventListener('click', (e) => {
+			window.location.reload(true);
+	});
+
+		}
+
 	function gameOver() {
 		let gameOverTitle = document.createElement('h2');
 		gameOverTitle.className = "gameOverTitle";
@@ -303,11 +351,13 @@ function playSoundDie() {
 		}
 		if (arrayFatalPoint.length == 3) {
 			fatality[0].remove();
+			gamer.classList.add("getbomb");
 			let soundFondDelete = document.querySelector("#fond");
 			soundFondDelete.remove();
 			playSoundDie();
 			gameOver();
 			point.remove();
+			timerShow.remove();
 			document.addEventListener('keydown', function(e) {
 				switch(e.keyCode){
 					case left:
